@@ -4,7 +4,7 @@
 "star_url": "index.html",
 "background_color": "#F8F51C",
 "display": "standalone",
-"orientation": "landscape"
+"orientation": "landscape",
 "icons": [
 
   {
@@ -37,5 +37,5 @@
 "type": "image/png",
 "sizes": "256x256"
 }
-],
+]
 }
