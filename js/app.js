@@ -1,7 +1,15 @@
-if ( navigator.serviceWorker){
-    // console.log('Service Worker presente')
-    //se puede forzar de nuevo a instalarse pero no vale la pena hacerlo de nuevo
-    navigator.serviceWorker.register('../sw.js')
+
+var url= window.location.href;
+var swLocation= '/chat-bobEsponja/sw.js';
+
+if(navigator.serviceWorker)
+{
+    if(url.includes('localhost')){
+        swLocation='../sw.js';
+    }
+    else{
+        navigator.serviceWorker.register(swLocation);
+    }
 }
 
 // Referencias de jQuery
