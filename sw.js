@@ -15,6 +15,7 @@ const INMUTABLE_CACHE = 'inmutable-v2';
    'img/avatars/calamardo.png',
    'img/avatars/cangrejo.png',
    'img/avatars/patricio.png',
+   'https://cdn.pixabay.com/photo/2019/09/05/16/33/sponge-bob-4454519_960_720.jpg',
    'js/app.js'
 
  ];
