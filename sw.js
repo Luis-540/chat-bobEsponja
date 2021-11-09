@@ -30,46 +30,40 @@ const INMUTABLE_CACHE = 'inmutable-v2';
  ];
 
 
-self.addEventListener('install', e=>{
-  const cacheStatic = caches.open(STATIC_CACHE).then(cache=>
-    cache.addAll(APP_SHELL));
-const cacheInmutable = caches.open(INMUTABLE_CACHE).then(cache=>
-  cache.addAll(APP_SHELL_INMUTABLE));
-
-  e.waitUntil(Promise.all([cacheStatic,cacheInmutable]));
-
+self.addEventListener('install', event => {
+    const cache_static = caches.open(STATIC_CACHE)
+        .then( cache => {
+            cache.addAll(APP_SHELL);
+    });
+    const cache_inmutable = caches.open(INMUTABLE_CACHE)
+        .then( cache => {
+            cache.addAll(APP_SHELL_INMUTABLE);
+    });
+    event.waitUntil(Promise.all([cache_static, cache_inmutable]));
 });
 
+self.addEventListener('activate', event => {
+    const respuesta = caches.keys().then( keys => {
+        keys.forEach(key => {
+            if(key !== STATIC_CACHE && key.includes('static')){
+                return caches.delete(key);
+            }
+        });
+    });
+    event.waitUntil(respuesta);
+});
 
-self.addEventListener('activate', e =>{
-  const respuesta = caches.keys().then(keys =>{
-    keys.forEach(key => {
-      if (key !== CACHE_STATIC_NAME && key.includes('static')) {
-        return caches.delete(key);
-
-      }
+self.addEventListener('fetch', event => {
+    const respuesta = caches.match(event.request).then(res => {
+        if(res){
+            return res;
+        }else{
+            console.log(event.request.url);
+            return fetch(event.request).then(new_response => {
+                actualizarCacheDinamico(DYNAMIC_CACHE,event.request,new_response);
+            });
+        }
 
     });
-
-  });
-  e.waitUntil(respuesta);
-});
-
-self.addEventListener('fetch', e=>{
-
-  const respuesta = caches.match(e.reques).then(res=>{
-
-    if(res)
-    return res
-    else{
-      console.log(e.request.url);
-      return fetch(e.request).then(newRes=>{
-
-        return actualizarCacheDinamico(DYNAMIC_CACHE,e.request,newRes);
-
-      });
-    }
-
-  });
-  e.respondWith(respuesta);
+    event.respondWith(respuesta);
 });
